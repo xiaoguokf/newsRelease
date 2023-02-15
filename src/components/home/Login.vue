@@ -49,8 +49,8 @@ export default {
             method:'post',
             url:'/api/user/login',
             data:{
-                "username": this.formLabelAlign.id, //账户
-                "password": this.formLabelAlign.password //密码
+            "username": this.formLabelAlign.id, //账户
+            "password": this.formLabelAlign.password //密码
             }
         }).then(function(response) {
             console.log(response)

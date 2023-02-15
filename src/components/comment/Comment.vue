@@ -80,13 +80,13 @@
           {{ analyzeEmoji(item.content) }}
         </div>
         <div class="reply-content reply-fa">
-          <div class="reply-font">
+          <!-- <div class="reply-font">
             <div>
               <i class="el-icon-thumb"></i>
               <font v-if="item.like.isLike" class="icon-reply icon-hf" @click="likeCom('delete',item.id,'first',item.like.likeId)">{{ item.like.likeNum }}</font>
               <font v-else class="icon-reply icon-hf" @click="likeCom('put',item.id,'first')">点赞</font>
             </div>
-          </div>
+          </div> -->
           <div class="reply-font" @click="doReply(item.id)">
             <div>
               <img src="../../assets/img_/icon/reply.png" class="icon-reply" /><font
@@ -187,13 +187,13 @@
           </div>
 
           <div class="reply-content reply-fa">
-            <div class="reply-font">
+            <!-- <div class="reply-font">
             <div>
               <i class="el-icon-thumb"></i>
               <font v-if="ritem.like.isLike" class="icon-reply icon-hf" @click="likeCom('delete',ritem.id,'second',ritem.like.likeId)">{{ ritem.like.likeNum }}</font>
               <font v-else class="icon-reply icon-hf" @click="likeCom('put',ritem.id,'second')">点赞</font>
             </div>
-          </div>
+          </div> -->
             <div class="reply-font" @click="doReply(ritem.id)">
               <div>
                 <img src="../../assets/img_/icon/reply.png" class="icon-reply" /><font
@@ -499,7 +499,7 @@ export default {
       return str;
     },
     doReply(index) {
-      this.$set(this.replyMap, index, true);
+      // this.$set(this.replyMap, index, true);
       console.log(this.replyMap[index]);
     },
 
@@ -1306,6 +1306,7 @@ export default {
 }
 .hbl-comm {
   padding: 40px;
+  background: #F5F7FD;
 }
 .hbl-comm p{
   text-align: center;

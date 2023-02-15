@@ -5,23 +5,23 @@
         <Header :info="info" />
       </el-header>
       <div v-if="type=='news'">
-        <el-row class="bg-purple-light" v-for="news in news_list" :key="news.newsId">
+        <el-row class="bg-purple-light" v-for="news in news_list" :key="news.id">
         <el-col :span="6" v-if="news.image!=null">
             <div class="grid-content">
                 <div class="three-left">
-                <img v-bind:src="'https://demo.xqstudy.top'+news.image" @click="newsDetail(news.newsId)">
+                <img v-bind:src="'https://demo.xqstudy.top'+news.image" @click="newsDetail(news.id)">
                 </div>
             </div>
         </el-col>
         <el-col :span="news.image!=null?18:24">
             <div class="grid-content">
                 <div class="two-right">
-                <h6 @click="newsDetail(news.newsId)">{{news.title}}</h6>
+                <h6 @click="newsDetail(news.id)">{{news.title}}</h6>
                 <label>
-                    发布者：<label>{{news.username}}</label>&nbsp;&nbsp;&nbsp;
-                    发布时间：{{news.showTime.substring(0,10)}}&nbsp;{{news.showTime.substring(11,16)}}
+                    <!-- 发布者：<label>{{news.username}}</label>&nbsp;&nbsp;&nbsp; -->
+                    <!-- 发布时间：{{news.showTime.substring(0,10)}}&nbsp;{{news.showTime.substring(11,16)}} -->
                 </label>
-                <p @click="newsDetail(news.newsId)">{{recomendDetail}}</p>
+                <p @click="newsDetail(news.id)">{{news.content}}</p>
                 </div>
             </div>
         </el-col>
@@ -132,13 +132,10 @@ export default {
       let that = this
       this.axios({
         method:'get',
-        url:'/api/search/'+type,
+        url:'/api/news/search?keyword='+clas,
         header:{
           token:that.token
         },
-        data:{
-          "content":clas,
-        }
       }).then(function(response) {
         console.log(response)
         if(response.data.code===200){

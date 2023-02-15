@@ -6,3 +6,4 @@
 
 # 忽略名称中间包含ignore的文件夹
 *modules*/
+*build/

@@ -19,7 +19,7 @@
                 <div>
                     <p class="author">标签：{{author}}
                     <el-button type="danger" icon="el-icon-thumb" @click="like">{{likeId!=null?likeNum:"点赞"}}</el-button>
-                    <el-button type="warning" icon="el-icon-star-off" @click="collect">{{collectId!=null?collectNum:"收藏"}}</el-button>
+                    <!-- <el-button type="warning" icon="el-icon-star-off" @click="collect">{{collectId!=null?collectNum:"收藏"}}</el-button> -->
                     </p>
                     <!-- <p class="gray">{{time}}&nbsp;|&nbsp;来源于：{{comeFrom}}</p> -->
                 </div>
@@ -167,7 +167,7 @@ export default {
       let that = this
       this.axios({
         method:'get',
-        url:'/api/news/articleDetail?newsId='+this.newsId,
+        url:'/api/news/detail?newsId='+this.newsId,
         header:{
           "token":this.token
         },
@@ -179,15 +179,11 @@ export default {
           if(news.image!=null) that.image = "https://demo.xqstudy.top"+news.image
           that.recomendTitle = news.title
           that.recomendDetail = news.content
-          that.time = news.createTime
-          that.author = news.label
-          that.username= news.username
+          that.time = news.updateTime
+          that.author = news.plateName
+          that.username= news.nickName
           that.userId = news.userId
-          that.likeId = news.likeId
-          that.collectId = news.collectId
-          console.log(that.collectId)
           that.likeNum = news.likeNum
-          that.collectNum = news.collectNum
         }else{
           that.$message({
             message: response.data.msg,
@@ -204,7 +200,7 @@ export default {
 
       this.axios({
         method:'get',
-        url:'/api/comment/FirstCom?newsId='+this.newsId,
+        url:'/api/comment/list?newsId='+this.newsId,
         header:{
           "token":this.token
         },
@@ -215,74 +211,21 @@ export default {
         if(response.data.code===200){
           that.commentList=[]
           for(let item of comments){
-
-            // 获取二级评论
-            let children = []
-            that.axios({
-              method:'get',
-              url:'/api/comment/SecondCom?commentId='+item.commentId,
-              header:{
-                "token":that.token
-              },
-            }).then(function(response) {
-              // console.log(response)
-              if(response.data.code===200){
-                let secComments = response.data.data.records
-                that.commentNum +=secComments.length
-                for(let sec of secComments){
-                  // console.log(sec)
-                  let chird ={
-                    id: sec.replayId,
-                    like:{
-                      isLike:sec.like,
-                      likeId:sec.likeId,
-                      likeNum:sec.likeNum
-                    },
-                    commentUser: {
-                      id: sec.userId,
-                      nickName: sec.username,
-                      avatar: sec.avatar||"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                    },
-                    targetUser: {
-                      id: sec.toUserId,
-                      nickName: sec.toUsername,
-                      avatar:sec.toAvatar||"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                    },
-                    content: sec.content,
-                    createDate: sec.createTime.substring(0,10)+" "+item.createTime.substring(11,19),
-                  }
-                  console.log(chird)
-                  children.push(chird)
-                }
-              }else{
-                that.$message({
-                  message: response.data.msg,
-                  type: 'warning'
-                });
-              }
-            }).catch(function (error) { // 请求失败处理
-              console.log(error);
-              that.$message({
-                message: error,
-                type: 'error'
-              });
-            });
-
             let comment ={
-              id: item.commentId,
-              like:{
-                isLike:item.like,
-                likeId:item.likeId,
-                likeNum:item.likeNum
-              },
+              id: item.comId,
+              // like:{
+              //   isLike:item.like,
+              //   likeId:item.likeId,
+              //   likeNum:item.likeNum
+              // },
               commentUser: {
                 id: item.userId,
-                nickName: item.username,
+                nickName: item.nickName,
                 avatar:item.avatar||"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
               },
-              content:item.content,
+              content:item.comment,
               createDate: item.createTime.substring(0,10)+" "+item.createTime.substring(11,19),
-              childrenList: children,
+              childrenList: item.replyList,
             }
             that.commentList.push(comment)
           }
@@ -318,9 +261,9 @@ export default {
       console.log("初始发送按钮点击事件：" + content);
       let data = {
         "newsId":this.newsId,
-        "content":content
+        "comment":content
       }
-      this.myaxios("post","/api/comment/FirstCom","comment",data)
+      this.myaxios("post","/api/comment/add","comment",data)
     },
     doChidSend(args) {
       // console.log("评论区发送按钮点击事件：");

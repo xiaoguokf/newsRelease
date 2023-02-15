@@ -23,6 +23,20 @@
             placeholder="确认密码" autocomplete="off"
             ></el-input>
         </el-form-item>
+        <el-form-item prop="email">
+            <i class="el-icon-message"></i>
+            <el-input
+            v-model="ruleForm.email"
+            placeholder="邮箱"
+            ></el-input>
+        </el-form-item>
+        <el-form-item>
+            <i class="el-icon-user"></i>
+            <el-input
+            v-model="ruleForm.nickName"
+            placeholder="昵称"
+            ></el-input>
+        </el-form-item>
         <el-form-item v-loading="registerLoad">
             <el-button type="primary" @click="submitForm('ruleForm')" 
             >注册</el-button
@@ -82,9 +96,10 @@ export default {
     return {
       ruleForm: {
         id: '',
-        message: '',
+        email: '',
         pass: '',
         checkPass: '',
+        nickName:''
       },
       verCodeTime:0,
       registerLoad:false,
@@ -117,8 +132,10 @@ export default {
               method:'post',
               url:'/api/user/register',
               data:{
-                "account": this.ruleForm.id, //账户
-                "pwd": this.ruleForm.pass //密码
+                "username": this.ruleForm.id, //账户
+                "password": this.ruleForm.pass, //密码
+                "email": this.ruleForm.email,
+                "nickName": this.ruleForm.nickName
               }
             }).then(function(response) {
               console.log(response)
@@ -202,10 +219,10 @@ export default {
 .el-form-item__content span{
     color: #002FA7;
 }
-form div:nth-child(4){
+form div:nth-child(6){
     margin: 0;
 }
-form div:nth-child(5) div span{
+form div:nth-child(7) div span{
     float: left;
 }
 .verCode{
