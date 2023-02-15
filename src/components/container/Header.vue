@@ -66,7 +66,7 @@ export default {
         if(response.data.code===200){
           that.login=false
           if(data.avatar!=null) that.avatar = data.avatar
-          that.name = data.username
+          that.name = data.nickName
         }else{
           if(response.data.code==3001) response.data.msg='请重新登录'
           that.$message({

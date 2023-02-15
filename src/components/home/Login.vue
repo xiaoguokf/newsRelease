@@ -49,14 +49,14 @@ export default {
             method:'post',
             url:'/api/user/login',
             data:{
-            "account": this.formLabelAlign.id, //账户
-            "pwd": this.formLabelAlign.password //密码
+            "username": this.formLabelAlign.id, //账户
+            "password": this.formLabelAlign.password //密码
             }
         }).then(function(response) {
             console.log(response)
             that.Load=false
             if (response.data.code === 200) {
-                sessionStorage.setItem('token',response.data.data)
+                sessionStorage.setItem('token',response.data.data.token)
                 //跳转到新闻推荐页，显示登录状态 
                 that.$router.push('/')
             }else{
