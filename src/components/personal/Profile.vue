@@ -6,16 +6,17 @@
     </div>
     <div class="information">
       <el-descriptions title="个人信息" :column="1" >
-        <el-descriptions-item label="用户名">{{ profile.username }}</el-descriptions-item>
-        <el-descriptions-item label="账号">{{ profile.account }}</el-descriptions-item>
+        <el-descriptions-item label="昵称">{{ profile.nickName }}</el-descriptions-item>
+        <el-descriptions-item label="账号">{{ profile.username }}</el-descriptions-item>
+        <el-descriptions-item label="角色"><el-tag>{{ profile.roleName }}</el-tag></el-descriptions-item>
         <el-descriptions-item label="绑定邮箱">{{ profile.email }}</el-descriptions-item>
-        <el-descriptions-item label="性别">{{ profile.sex?'男':'女' }}</el-descriptions-item>
-        <el-descriptions-item label="关注">{{ profile.focusNum }}</el-descriptions-item>
-        <el-descriptions-item label="粉丝">
+        <!-- <el-descriptions-item label="性别">{{ profile.sex?'男':'女' }}</el-descriptions-item>
+        <el-descriptions-item label="关注">{{ profile.focusNum }}</el-descriptions-item> -->
+        <!-- <el-descriptions-item label="粉丝">
           <el-tag size="small">{{ profile.fansNum }}</el-tag>
-        </el-descriptions-item>
+        </el-descriptions-item> -->
         <el-descriptions-item label="所在地区">江苏省苏州市吴中区吴中大道 1188 号</el-descriptions-item>
-        <el-descriptions-item label="个人简介">{{ profile.introduce }}</el-descriptions-item>
+        <!-- <el-descriptions-item label="个人简介">{{ profile.introduce }}</el-descriptions-item> -->
       </el-descriptions>
     </div>
     
@@ -25,34 +26,31 @@
       <!-- <img :src="profile.avatar" alt=""> -->
               <!-- action="https://jsonplaceholder.typicode.com/posts/" -->
       <el-upload
+        name="image"
         class="avatar-uploader"
-        action="/api/upload/image"
+        action="/api/common/upload/image"
         :headers="uploadHeader"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload">
-        <img v-if="changeProfile.avatar" :src="changeProfile.avatar" class="avatar">
+        <img v-if="changeProfile.avatar" :src="changeProfile.avatar" class="avatar" :alt="changeProfile.alt">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
     </div>
     <div class="information">
       <el-descriptions title="个人信息" :column="1" >
-        <el-descriptions-item label="用户名"><el-input style="width: 450px;" v-model="changeProfile.username"></el-input></el-descriptions-item>
-        <el-descriptions-item label="账号">{{ profile.account }}</el-descriptions-item>
-        <el-descriptions-item label="性别">
-          <el-radio-group v-model="changeProfile.sex">
-            <el-radio label="1">男</el-radio>
-            <el-radio label="0">女</el-radio>
-          </el-radio-group>
-        </el-descriptions-item>
-        <el-descriptions-item label="关注">{{ profile.focusNum }}
+        <el-descriptions-item label="昵称"><el-input style="width: 450px;" v-model="changeProfile.nickName"></el-input></el-descriptions-item>
+        <el-descriptions-item label="账号">{{ profile.username }}</el-descriptions-item>
+        <el-descriptions-item label="角色"><el-tag>{{ profile.roleName }}</el-tag></el-descriptions-item>
+        <el-descriptions-item label="绑定邮箱">{{ profile.email }}</el-descriptions-item>
+        <!-- <el-descriptions-item label="关注">{{ profile.focusNum }}
         </el-descriptions-item>
         <el-descriptions-item label="粉丝数">
           <el-tag size="small">{{ profile.fansNum }}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item label="个人简介">
+        </el-descriptions-item> -->
+        <!-- <el-descriptions-item label="个人简介">
           <el-input type="textarea" v-model="changeProfile.introduce"></el-input>
-        </el-descriptions-item>
+        </el-descriptions-item> -->
       </el-descriptions>
     </div>
     
@@ -75,10 +73,8 @@ export default {
       profile: {},
       isChange: false,
       changeProfile: {
-        username: "", //用户名
+        nickName: "", //昵称
         avatar: "", //头像
-        sex: "", //性别
-        introduce: "" //简介
       },
       uploadHeader: {
         'token': window.sessionStorage.getItem('token')
@@ -89,20 +85,22 @@ export default {
     this.getProfile();
   },
   methods: { 
-    handleAvatarSuccess(res, file) {
+    handleAvatarSuccess(res, image) {
       console.log(res);
-      this.changeProfile.avatar="https://demo.xqstudy.top"+res.data
-      // this.axios({
-      //   method: "POST",
-      //   url: "/api/upload/image",
-      //   headers: {'Content-Type': 'multipart/form-data'},
-      //   data: {file:file}
-      // }).then(res => { 
-      //   console.log(res);
-      //   this.changeProfile.avatar="https://demo.xqstudy.top/upload/image/"+res.data.data
-      // }).catch(err => { 
-      //   console.log(err);
-      // })
+      // this.changeProfile.avatar="https://demo.xqstudy.top"+res.data
+      this.axios({
+        method: "POST",
+        url: "/api/common/upload/image",
+        headers: {'Content-Type': 'multipart/form-data'},
+        data: {
+          image: image
+        }
+      }).then(res => { 
+        console.log(res);
+        this.changeProfile=res.data.data
+      }).catch(err => { 
+        console.log(err);
+      })
         // this.changeProfile.avatar = URL.createObjectURL(file.raw);
       },
     beforeAvatarUpload(file) {
@@ -124,7 +122,7 @@ export default {
     putInfo() { 
       this.axios({
         method: "PUT",
-        url: "/api/user/info",
+        url: "/api/user/updateInfo",
         data: this.changeProfile
       }).then(res => { 
         console.log(res);

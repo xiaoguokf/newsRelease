@@ -35,7 +35,8 @@ export default {
         back:true
       }
     }
-  }
+  },
+
  
 }
 </script>
