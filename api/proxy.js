@@ -5,16 +5,15 @@ module.exports = (req, res) => {
     // 代理目标地址
     // 这里使用 backend 主要用于区分 vercel serverless 的 api 路径
     if (req.url.startsWith('/api')) {
-        target = 'http://106.52.150.170:8080'
+        target = 'http://106.52.150.170:8080/'
     }
 
     // 创建代理对象并转发请求
     createProxyMiddleware({
-        target,
+        target, //目标地址
+        ws: true,
         changeOrigin: true,
-        pathRewrite: (path) => {
-            return path.replace(/^\/api/, "/")
-        }
+        pathRewrite: { '^/api': '/' } //这里重写路径
     })(req, res)
 }
 
