@@ -116,8 +116,7 @@
               <div
                 :class="pBodyMap[item.id] ? 'OwO' : 'OwO OwO-open'"
                 class="emoj publish"
-                :style="{ width: emojiWidth }"
-              >
+                :style="{ width: emojiWidth }">
                 <div class="OwO-logo" @click="pBodyStatus(item.id)">
                   <span>Emoji表情</span>
                 </div>
@@ -203,7 +202,7 @@
               </div>
             </div>
 
-            <i class="el-icon-delete-solid" @click="deleteCom('2',ritem.id)" v-if=""></i>
+            <i class="el-icon-delete-solid" @click="deleteCom('2',ritem.index)" v-if="ritem.commentUser.id==myId"></i>
 
             <div
               class="comment"
@@ -357,7 +356,7 @@ export default {
   },
   data() {
     return {
-      myid,
+      myId:'',
       replyMap: [],
       buttonMap: [],
       pBodyMap: [],
@@ -597,7 +596,7 @@ export default {
           if(type=='1'){
             this.myaxios("delete","/api/comment/delete?comId="+id,"deleteFirst")
           }else{
-            this.myaxios("delete","/api/comment/delete","deleteSecond",data)
+            this.myaxios("delete","/api/reply/delete?replyId="+id,"deleteSecond")
           }
         }).catch(() => {
           this.$message({
@@ -614,7 +613,7 @@ export default {
   created() {
     //生命周期函数
     let token = jwt_decode(sessionStorage.getItem('token',token))
-    console.log(token)
+    // console.log(token)
     this.myId = token.userId
   },
   mounted() {

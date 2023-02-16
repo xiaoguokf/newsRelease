@@ -173,7 +173,7 @@ export default {
       }).then(function(response) {
         // console.log(response)
         let news = response.data.data
-        console.log(news)
+        // console.log(news)
         if(response.data.code===200){
           if(news.image!=null) that.image = "https://demo.xqstudy.top"+news.image
           that.recomendTitle = news.title
@@ -212,15 +212,33 @@ export default {
           that.commentList=[]
           let indexNum=1
           for(let item of comments){
-            console.log(item.comId,indexNum)
+            // 获取二级评论
+            let children = []
+            for(let sec of item.replyList){
+                  // console.log(sec)
+                  let chird ={
+                    id: indexNum++,
+                    index:sec.replyId,
+                    commentUser: {
+                      id: sec.userId,
+                      nickName: sec.nickName,
+                      avatar: sec.avatar||"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
+                    },
+                    targetUser: {
+                      id: sec.toUserId,
+                      nickName: item.nickName,
+                      avatar:sec.toAvatar||"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
+                    },
+                    content: sec.content,
+                    createDate: sec.createTime.substring(0,10)+" "+item.createTime.substring(11,19),
+                  }
+                  // console.log(chird)
+                  children.push(chird)
+                }
+
             let comment ={
               id: indexNum++,
               index:item.comId,
-              // like:{
-              //   isLike:item.like,
-              //   likeId:item.likeId,
-              //   likeNum:item.likeNum
-              // },
               commentUser: {
                 id: item.userId,
                 nickName: item.nickName,
@@ -228,29 +246,7 @@ export default {
               },
               content:item.comment,
               createDate: item.createTime.substring(0,10)+" "+item.createTime.substring(11,19),
-              childrenList: [
-                // {
-                //   id: 2,
-                //   like:{
-                //     isLike:false,
-                //     likeId:0,
-                //     likeNum:0
-                //   },
-                //   commentUser: {
-                //     id: 2,
-                //     nickName: "坏菠萝",
-                //     avatar: "",
-                //   },
-                //   targetUser: {
-                //     id: 1,
-                //     nickName: "花非花",
-                //     avatar:
-                //       "http://qzapp.qlogo.cn/qzapp/101483738/6637A2B6611592A44A7699D14E13F7F7/50",
-                //   },
-                //   content: "真的就很棒！很Nice!",
-                //   createDate: "2019-9-23 17:45:26",
-                // },
-              ],
+              childrenList: children,
             }
             // console.log(comment)  
             that.commentList.push(comment)
